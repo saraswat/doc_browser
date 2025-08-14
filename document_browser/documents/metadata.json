@@ -1,0 +1,46 @@
+{
+  "documents": [
+    {
+      "name": "AI Research Report",
+      "date": "2024-01-15",
+      "file_path": "content/AI Research Report_2024-01-15.html",
+      "type": "html",
+      "description": "Comprehensive analysis of current AI research trends"
+    },
+    {
+      "name": "AI Research Report",
+      "date": "2024-02-10",
+      "file_path": "content/AI Research Report_2024-02-10.html",
+      "type": "html",
+      "description": "Updated AI research report with latest findings"
+    },
+    {
+      "name": "Market Analysis",
+      "date": "2024-01-20",
+      "file_path": "content/Market Analysis_2024-01-20.html",
+      "type": "html",
+      "description": "Quarterly market analysis with charts and trends"
+    },
+    {
+      "name": "Technical Specification",
+      "date": "2024-01-25",
+      "file_path": "content/Technical Specification_2024-01-25.html",
+      "type": "html",
+      "description": "Detailed technical specifications for new system"
+    },
+    {
+      "name": "Financial Summary",
+      "date": "2024-01-30",
+      "file_path": "content/Financial Summary_2024-01-30.pdf",
+      "type": "pdf",
+      "description": "Q4 2023 financial summary and projections"
+    },
+    {
+      "name": "Product Roadmap",
+      "date": "2024-02-05",
+      "file_path": "content/Product Roadmap_2024-02-05.pdf",
+      "type": "pdf",
+      "description": "2024 product development roadmap"
+    }
+  ]
+}

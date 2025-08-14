@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="document-name" content="Technical Specification">
+    <meta name="document-date" content="2024-01-25">
+    <meta name="author" content="Engineering Team">
+    <meta name="version" content="3.0">
+    <title>System Architecture Technical Specification</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #2d3748;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #63b3ed;
+            border-bottom: 2px solid #4299e1;
+            padding-bottom: 10px;
+            font-family: 'Arial', sans-serif;
+        }
+        h2 {
+            color: #68d391;
+            margin-top: 30px;
+            font-family: 'Arial', sans-serif;
+        }
+        h3 {
+            color: #fbb6ce;
+            margin-top: 25px;
+        }
+        .code-block {
+            background: #1a202c;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', monospace;
+            color: #68d391;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            background: #2d3748;
+        }
+        th, td {
+            border: 1px solid #4a5568;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4a5568;
+            color: #e2e8f0;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #374151;
+        }
+        .spec-box {
+            background: #2a4365;
+            border: 1px solid #3182ce;
+            border-left: 4px solid #63b3ed;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .warning-box {
+            background: #744210;
+            border: 1px solid #d69e2e;
+            border-left: 4px solid #f6e05e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .diagram {
+            background: #1a202c;
+            border: 2px solid #4a5568;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+        .endpoint {
+            background: #322659;
+            border: 1px solid #553c9a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            color: #c084fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ System Architecture Technical Specification</h1>
+        <p><strong>Version:</strong> 3.0 | <strong>Date:</strong> January 25, 2024 | <strong>Status:</strong> Draft</p>
+        
+        <h2>🏗️ System Overview</h2>
+        <p>This document outlines the technical architecture for the distributed microservices platform designed to handle high-throughput data processing with real-time analytics capabilities.</p>
+        
+        <div class="spec-box">
+            <strong>🎯 Design Goals:</strong>
+            <ul>
+                <li>Handle 10,000+ concurrent users</li>
+                <li>Process 1M+ events per minute</li>
+                <li>Achieve 99.9% uptime SLA</li>
+                <li>Sub-200ms API response times</li>
+            </ul>
+        </div>
+        
+        <h2>🔧 Technology Stack</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Version</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>API Gateway</td>
+                    <td>NGINX + Kong</td>
+                    <td>3.4.x</td>
+                    <td>Request routing, rate limiting</td>
+                </tr>
+                <tr>
+                    <td>Application Layer</td>
+                    <td>Node.js + Express</td>
+                    <td>18.x LTS</td>
+                    <td>Business logic processing</td>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>PostgreSQL</td>
+                    <td>15.x</td>
+                    <td>Primary data storage</td>
+                </tr>
+                <tr>
+                    <td>Cache Layer</td>
+                    <td>Redis Cluster</td>
+                    <td>7.x</td>
+                    <td>Session & data caching</td>
+                </tr>
+                <tr>
+                    <td>Message Queue</td>
+                    <td>Apache Kafka</td>
+                    <td>3.6.x</td>
+                    <td>Event streaming</td>
+                </tr>
+                <tr>
+                    <td>Container Runtime</td>
+                    <td>Docker + Kubernetes</td>
+                    <td>1.28.x</td>
+                    <td>Container orchestration</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>🏛️ Architecture Diagram</h2>
+        <div class="diagram">
+            <pre style="color: #68d391;">
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Client    │───▶│  API Gateway │───▶│ Load        │
+│ Application │    │   (Kong)     │    │ Balancer    │
+└─────────────┘    └──────────────┘    └─────────────┘
+                                              │
+                           ┌──────────────────┼──────────────────┐
+                           ▼                  ▼                  ▼
+                   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
+                   │ Microservice│   │ Microservice│   │ Microservice│
+                   │    Pod 1    │   │    Pod 2    │   │    Pod 3    │
+                   └─────────────┘   └─────────────┘   └─────────────┘
+                           │                  │                  │
+                           └──────────────────┼──────────────────┘
+                                              ▼
+                   ┌─────────────┐                    ┌─────────────┐
+                   │    Redis    │◀──────────────────▶│ PostgreSQL  │
+                   │   Cluster   │                    │   Primary   │
+                   └─────────────┘                    └─────────────┘
+                           │                                  │
+                           ▼                                  ▼
+                   ┌─────────────┐                    ┌─────────────┐
+                   │   Kafka     │                    │ PostgreSQL  │
+                   │  Event Bus  │                    │   Replica   │
+                   └─────────────┘                    └─────────────┘
+            </pre>
+        </div>
+        
+        <h2>🔌 API Specifications</h2>
+        
+        <h3>Core API Endpoints</h3>
+        
+        <div class="endpoint">
+            <strong>GET</strong> /api/v1/health<br>
+            <em>Returns system health status</em>
+        </div>
+        
+        <div class="code-block">
+Response: 200 OK
+{
+  "status": "healthy",
+  "timestamp": "2024-01-25T10:30:00Z",
+  "services": {
+    "database": "connected",
+    "cache": "connected",
+    "queue": "connected"
+  }
+}
+        </div>
+        
+        <div class="endpoint">
+            <strong>POST</strong> /api/v1/events<br>
+            <em>Submit new event for processing</em>
+        </div>
+        
+        <div class="code-block">
+Request Body:
+{
+  "event_type": "user_action",
+  "user_id": "12345",
+  "timestamp": "2024-01-25T10:30:00Z",
+  "data": {
+    "action": "button_click",
+    "page": "/dashboard"
+  }
+}
+
+Response: 202 Accepted
+{
+  "event_id": "evt_abc123",
+  "status": "queued"
+}
+        </div>
+        
+        <div class="endpoint">
+            <strong>GET</strong> /api/v1/analytics/{user_id}<br>
+            <em>Retrieve user analytics data</em>
+        </div>
+        
+        <h2>💾 Database Schema</h2>
+        
+        <h3>Primary Tables</h3>
+        
+        <div class="code-block">
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT true
+);
+
+CREATE TABLE events (
+    id BIGSERIAL PRIMARY KEY,
+    event_id VARCHAR(50) UNIQUE NOT NULL,
+    user_id INTEGER REFERENCES users(id),
+    event_type VARCHAR(50) NOT NULL,
+    event_data JSONB NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
+    processed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_events_user_id ON events(user_id);
+CREATE INDEX idx_events_timestamp ON events(timestamp);
+CREATE INDEX idx_events_type ON events(event_type);
+        </div>
+        
+        <h2>🚀 Performance Requirements</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Target</th>
+                    <th>Current</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>API Response Time (P95)</td>
+                    <td>&lt; 200ms</td>
+                    <td>185ms</td>
+                    <td>✅ Met</td>
+                </tr>
+                <tr>
+                    <td>Throughput</td>
+                    <td>10K req/sec</td>
+                    <td>8.5K req/sec</td>
+                    <td>🟡 In Progress</td>
+                </tr>
+                <tr>
+                    <td>Database Connections</td>
+                    <td>&lt; 100 active</td>
+                    <td>75 active</td>
+                    <td>✅ Met</td>
+                </tr>
+                <tr>
+                    <td>Memory Usage</td>
+                    <td>&lt; 4GB per pod</td>
+                    <td>3.2GB per pod</td>
+                    <td>✅ Met</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>🔒 Security Specifications</h2>
+        
+        <div class="spec-box">
+            <strong>Authentication & Authorization:</strong>
+            <ul>
+                <li>JWT tokens with 24-hour expiration</li>
+                <li>OAuth 2.0 integration for third-party auth</li>
+                <li>Role-based access control (RBAC)</li>
+                <li>API key authentication for service-to-service calls</li>
+            </ul>
+        </div>
+        
+        <div class="spec-box">
+            <strong>Data Protection:</strong>
+            <ul>
+                <li>TLS 1.3 for all communications</li>
+                <li>AES-256 encryption for sensitive data at rest</li>
+                <li>Database query parameterization to prevent SQL injection</li>
+                <li>Input validation and sanitization</li>
+            </ul>
+        </div>
+        
+        <h2>📊 Monitoring & Observability</h2>
+        
+        <div class="code-block">
+# Prometheus Metrics Configuration
+- name: api_request_duration_seconds
+  type: histogram
+  help: "HTTP request duration in seconds"
+  
+- name: database_connection_pool_size
+  type: gauge
+  help: "Current database connection pool size"
+  
+- name: kafka_consumer_lag
+  type: gauge
+  help: "Kafka consumer lag in messages"
+        </div>
+        
+        <h2>🔄 Deployment Pipeline</h2>
+        
+        <div class="code-block">
+# CI/CD Pipeline Stages
+1. Code Commit → GitHub
+2. Automated Tests (Jest + Supertest)
+3. Security Scanning (Snyk)
+4. Docker Image Build
+5. Push to Container Registry
+6. Kubernetes Deployment (Staging)
+7. Integration Tests
+8. Production Deployment (Blue-Green)
+9. Health Checks & Rollback on Failure
+        </div>
+        
+        <div class="warning-box">
+            <strong>⚠️ Critical Dependencies:</strong>
+            <ul>
+                <li>Database must be highly available (99.9% uptime)</li>
+                <li>Redis cluster requires minimum 3 nodes</li>
+                <li>Kafka requires minimum 3 brokers for fault tolerance</li>
+                <li>Load balancer must handle SSL termination</li>
+            </ul>
+        </div>
+        
+        <h2>📈 Scalability Strategy</h2>
+        <ul>
+            <li><strong>Horizontal Scaling:</strong> Auto-scaling based on CPU/memory usage</li>
+            <li><strong>Database Scaling:</strong> Read replicas for query distribution</li>
+            <li><strong>Cache Strategy:</strong> Redis cluster with consistent hashing</li>
+            <li><strong>CDN Integration:</strong> CloudFront for static asset delivery</li>
+        </ul>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #4a5568; color: #a0aec0; text-align: center;">
+            <em>Technical Specification v3.0 • Engineering Team • Last Updated: January 25, 2024</em>
+        </div>
+    </div>
+</body>
+</html>
