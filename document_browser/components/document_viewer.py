@@ -8,6 +8,7 @@ from utils.document_loader import (
     get_document_type
 )
 from components.pdf_viewer import render_pdf_document
+from components.comments import render_comment_section, get_comment_statistics
 
 
 def render_document(selected_doc: Tuple[str, str]) -> None:
@@ -21,6 +22,10 @@ def render_document(selected_doc: Tuple[str, str]) -> None:
         render_pdf_document(selected_doc)
     else:
         st.error(f"Document not found: {name} ({date})")
+        return
+    
+    # Add comment section for all document types
+    render_comment_section(name, date, doc_type)
 
 
 def render_html_document(selected_doc: Tuple[str, str]) -> None:

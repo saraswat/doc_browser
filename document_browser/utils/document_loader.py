@@ -10,7 +10,7 @@ import streamlit as st
 import PyPDF2
 
 
-@st.cache
+@st.cache_data
 def load_document_metadata() -> Dict:
     """Load document metadata from metadata.json file."""
     metadata_path = Path(__file__).parent.parent / "documents" / "metadata.json"
@@ -25,7 +25,7 @@ def load_document_metadata() -> Dict:
         return {"documents": []}
 
 
-@st.cache
+@st.cache_data
 def load_document_list() -> Tuple[List[str], List[str]]:
     """Load available document names and dates."""
     metadata = load_document_metadata()
@@ -37,7 +37,7 @@ def load_document_list() -> Tuple[List[str], List[str]]:
     return names, dates
 
 
-@st.cache
+@st.cache_data
 def load_document_content(name: str, date: str) -> Optional[Union[str, bytes]]:
     """Load document content by name and date - supports both HTML and PDF."""
     documents_dir = Path(__file__).parent.parent / "documents" / "content"
@@ -66,7 +66,7 @@ def load_document_content(name: str, date: str) -> Optional[Union[str, bytes]]:
     
     return None
 
-@st.cache
+@st.cache_data
 def load_html_document(name: str, date: str) -> Optional[str]:
     """Load HTML document content by name and date."""
     content = load_document_content(name, date)
@@ -74,7 +74,7 @@ def load_html_document(name: str, date: str) -> Optional[str]:
         return content
     return None
 
-@st.cache
+@st.cache_data
 def load_pdf_document(name: str, date: str) -> Optional[bytes]:
     """Load PDF document content by name and date."""
     content = load_document_content(name, date)

@@ -3,6 +3,7 @@
 import streamlit as st
 from typing import Optional, Tuple
 from utils.document_loader import load_document_list, get_available_documents
+from components.comments import get_comment_statistics
 
 
 def render_document_selectors() -> Optional[Tuple[str, str]]:
@@ -39,6 +40,18 @@ def render_document_selectors() -> Optional[Tuple[str, str]]:
     )
     
     if selected_name and selected_date:
+        # Show comment statistics for selected document
+        try:
+            stats = get_comment_statistics(selected_name, selected_date)
+            if stats["total"] > 0:
+                st.markdown(f"💬 **{stats['total']}** comment(s)")
+                if stats["unresolved"] > 0:
+                    st.markdown(f"⚠️ **{stats['unresolved']}** unresolved")
+                if stats["resolved"] > 0:
+                    st.markdown(f"✅ **{stats['resolved']}** resolved")
+        except Exception:
+            pass  # Ignore errors in comment statistics
+        
         return selected_name, selected_date
     
     return None
